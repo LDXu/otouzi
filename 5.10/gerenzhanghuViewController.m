@@ -992,7 +992,7 @@ constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 
 - (void)loginAction:(id)sender {
     [self xuzhitui];
-     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"huodongshijian"];
+     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"valun1"];
     [[NSUserDefaults standardUserDefaults ]removeObjectForKey:@"duandingkuaijie"];
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"biaohaoka"];
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"morenkahao"];

@@ -1630,7 +1630,7 @@
     
     [manager POST:@"http://debug.otouzi.com:8012/user/spaceSet"
       parameters:@{
-                   @"key":@"obtain", //App端自定义key值
+                   @"key":@"obtain", 
                    @"value":sasw
                    }
          success:^(AFHTTPRequestOperation *  operation, id   responseObject) {
