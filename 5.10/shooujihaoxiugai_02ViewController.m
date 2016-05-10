@@ -13,7 +13,7 @@
 #import "CLLockVC.h"
 #import "AppDelegate.h"
 #import "TabbarViewController.h"
-#import "DengluViewController.h"
+#import "gerenzhanghuViewController.h"
 @interface shooujihaoxiugai_02ViewController ()
 {
     __block int timeout;
@@ -1784,7 +1784,7 @@
                   if ([[objc1 objectForKey:@"code"]isEqualToNumber:@200]) {
                       
                       
-                      DengluViewController *deng1 = [[DengluViewController alloc]init];
+                      gerenzhanghuViewController *deng1 = [[gerenzhanghuViewController alloc]init];
                    
                       CATransition *animation = [CATransition animation];
                       animation.duration = 0.5;
@@ -1797,7 +1797,7 @@
                       [self presentViewController:deng1 animated:NO completion:nil];
 
                      
-                      [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"code1"];
+//                      [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"code1"];
                       
                       
                       

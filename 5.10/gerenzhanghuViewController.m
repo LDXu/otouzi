@@ -21,7 +21,7 @@
 #import "CoreArchive.h"
 #import "UICommons.h"
 #import "SevenSwitch.h"
-
+#import "maitViewController.h"
 #import "guanyuViewController.h"
 #define __kScreenWidth__ ([[UIScreen mainScreen] bounds].size.width)
 #define __kScreenHeight__ ([[UIScreen mainScreen] bounds].size.height)
@@ -442,7 +442,25 @@
 }
 -(void)cheba1:(id)sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    CATransition *animation = [CATransition animation];
+    animation.duration = 0.5;
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    animation.type = @"pageCurl";
+    animation.type = kCATransitionPush;
+    animation.subtype = kCATransitionFromLeft;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    
+    
+    AppDelegate *delete =  (AppDelegate *)[UIApplication sharedApplication].delegate;
+    TabbarViewController *tab = [[TabbarViewController alloc]init];
+    delete.window.rootViewController = tab;
+
+     [[NSNotificationCenter defaultCenter]postNotificationName:@"fanhui" object:self];//页面跳转
+    
+    
 }
 
 -(void)zhongxin

@@ -1363,7 +1363,284 @@
 }
 
 
+-(void)yanzhenghuodongone
+{
+    NSString *path =
+    [NSHomeDirectory() stringByAppendingString:@"/Documents/dic.plist"];
+    //读取文件
+    NSDictionary *notFirstDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    
+    NSString *sb = [notFirstDic objectForKey:@"sb"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    
+    NSDate* lastDate =
+    [[NSUserDefaults standardUserDefaults] objectForKey:@"expire_date"];
+    NSDate* currentDate = [NSDate date];
+    float time = [[[NSUserDefaults standardUserDefaults]objectForKey:@"exptime"] floatValue];
+    
+    //时间戳
+    float timeExpire =
+    [currentDate timeIntervalSince1970] - [lastDate timeIntervalSince1970];
+    
+    if (timeExpire >= time) {
+        //重新请求access_token
+        
+        NSString *uuid = [[UIDevice currentDevice].identifierForVendor UUIDString];
+        
+        NSString *udid = [UIDevice currentDevice].model ;
+        NSLog(@"************唯一标识符%@",uuid);
+        
+        NSDate *localDate = [NSDate date]; //获取当前时间
+        NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[localDate timeIntervalSince1970]];  //转化为UNIX时间戳
+        NSLog(@"timeSp:%@",timeSp); //时间戳的值
+        
+        
+        NSString *path =
+        [NSHomeDirectory() stringByAppendingString:@"/Documents/dic.plist"];
+        //读取文件
+        NSDictionary *notFirstDic = [NSDictionary dictionaryWithContentsOfFile:path];
+        
+        NSString *sb = [notFirstDic objectForKey:@"sb"];
+        
+        
+        
+        
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        
+        
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+        
+        
+        NSDictionary *infoDic = [[NSBundle mainBundle]infoDictionary];
+        
+        NSString *currentVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+        
+        
+        [manager POST:@"http://debug.otouzi.com:8012/device/register"
+         
+           parameters:@{@"device_type": @"ios",
+                        @"device_unique":uuid,
+                        @"device_model": udid,
+                        @"system_version": currentVersion,
+                        @"request_timestamp": timeSp,
+                        // @" backage_md5": @"1234678998765412374185296395175",
+                        
+                        @"app_session_token":sb}
+         
+              success:^(AFHTTPRequestOperation * operation, id  responseObject) {
+                  
+                  
+                  NSLog(@"%@",responseObject);
+                  
+                  
+                  NSMutableDictionary *objc = [[NSMutableDictionary alloc] init];
+                  
+                  objc = responseObject;
+                  
+                  [[NSUserDefaults standardUserDefaults] setObject:objc[@"data"][@"access_token"] forKey:@"token"];//存在本地沙盒
+                  
+                  [[NSUserDefaults standardUserDefaults]setObject:objc[@"data"][@"expiresIn"] forKey:@"exptime"];
+                  
+                  [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"expire_date"];
+                  
+                  
+                  
+                  [[NSUserDefaults standardUserDefaults] synchronize];
+              } failure:^(AFHTTPRequestOperation * operation, NSError *  error) {
+                  
+                  // NSLog(@"%@",error);
+                  
+              }];
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"Access-Token"]; //请求头
+        [manager.requestSerializer setValue:sb forHTTPHeaderField:@"Application-Session"];
+    }
+    else {
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"Access-Token"]; //请求头
+        [manager.requestSerializer setValue:sb forHTTPHeaderField:@"Application-Session"];
+        
+    }
+    
+    
+    [manager POST:@"http://debug.otouzi.com:8012/user/spaceGet"
+      parameters:@{
+                     @"key":@"obtain"
+                   }
+         success:^(AFHTTPRequestOperation *  operation, id   responseObject) {
+             
+             NSLog(@"  %@",responseObject);
+             NSDictionary *shouye = [[NSDictionary alloc] init];
+             
+             
+             shouye = responseObject;
+             NSString *panan = [shouye objectForKey:@"code"];
+             int add = [panan intValue];
+             if (add == 200) {
+                 
+                 NSDictionary *dataw = [shouye objectForKey:@"data"];
+                 NSString *dtas = [dataw objectForKey:@"obtain"];
+                 
+                 NSString *shijiancuo = [[NSUserDefaults standardUserDefaults]objectForKey:@"valun1"];
+                 if ([dtas isEqualToString:shijiancuo]) {
+                     NSLog(@"已经弹出");
+                 }else{
+                     [self showShareView];
+                     [self yanzhenghuodongtow];
+                 }
+                                  
+             }else{
 
+                 [self showShareView];
+                 [self yanzhenghuodongtow];
+             }
+             
+         }
+         failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+             
+         }];
+}
+
+
+
+-(void)yanzhenghuodongtow{
+    NSString *path =
+    [NSHomeDirectory() stringByAppendingString:@"/Documents/dic.plist"];
+    //读取文件
+    NSDictionary *notFirstDic = [NSDictionary dictionaryWithContentsOfFile:path];
+    
+    NSString *sb = [notFirstDic objectForKey:@"sb"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    
+    NSDate* lastDate =
+    [[NSUserDefaults standardUserDefaults] objectForKey:@"expire_date"];
+    NSDate* currentDate = [NSDate date];
+    float time = [[[NSUserDefaults standardUserDefaults]objectForKey:@"exptime"] floatValue];
+    
+    //时间戳
+    float timeExpire =
+    [currentDate timeIntervalSince1970] - [lastDate timeIntervalSince1970];
+    
+    if (timeExpire >= time) {
+        //重新请求access_token
+        
+        NSString *uuid = [[UIDevice currentDevice].identifierForVendor UUIDString];
+        
+        NSString *udid = [UIDevice currentDevice].model ;
+        NSLog(@"************唯一标识符%@",uuid);
+        
+        NSDate *localDate = [NSDate date]; //获取当前时间
+        NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[localDate timeIntervalSince1970]];  //转化为UNIX时间戳
+        NSLog(@"timeSp:%@",timeSp); //时间戳的值
+        
+        
+        NSString *path =
+        [NSHomeDirectory() stringByAppendingString:@"/Documents/dic.plist"];
+        //读取文件
+        NSDictionary *notFirstDic = [NSDictionary dictionaryWithContentsOfFile:path];
+        
+        NSString *sb = [notFirstDic objectForKey:@"sb"];
+        
+        
+        
+        
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        
+        
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+        
+        
+        NSDictionary *infoDic = [[NSBundle mainBundle]infoDictionary];
+        
+        NSString *currentVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+        
+        
+        [manager POST:@"http://debug.otouzi.com:8012/device/register"
+         
+           parameters:@{@"device_type": @"ios",
+                        @"device_unique":uuid,
+                        @"device_model": udid,
+                        @"system_version": currentVersion,
+                        @"request_timestamp": timeSp,
+                        // @" backage_md5": @"1234678998765412374185296395175",
+                        
+                        @"app_session_token":sb}
+         
+              success:^(AFHTTPRequestOperation * operation, id  responseObject) {
+                  
+                  
+                  NSLog(@"%@",responseObject);
+                  
+                  
+                  NSMutableDictionary *objc = [[NSMutableDictionary alloc] init];
+                  
+                  objc = responseObject;
+                  
+                  [[NSUserDefaults standardUserDefaults] setObject:objc[@"data"][@"access_token"] forKey:@"token"];//存在本地沙盒
+                  
+                  [[NSUserDefaults standardUserDefaults]setObject:objc[@"data"][@"expiresIn"] forKey:@"exptime"];
+                  
+                  [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"expire_date"];
+                  
+                  
+                  
+                  [[NSUserDefaults standardUserDefaults] synchronize];
+              } failure:^(AFHTTPRequestOperation * operation, NSError *  error) {
+                  
+                  // NSLog(@"%@",error);
+                  
+              }];
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"Access-Token"]; //请求头
+        [manager.requestSerializer setValue:sb forHTTPHeaderField:@"Application-Session"];
+    }
+    else {
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"Access-Token"]; //请求头
+        [manager.requestSerializer setValue:sb forHTTPHeaderField:@"Application-Session"];
+        
+    }
+    NSString *sasw = [[NSUserDefaults standardUserDefaults]objectForKey:@"valun1"];
+    
+    [manager POST:@"http://debug.otouzi.com:8012/user/spaceSet"
+      parameters:@{
+                   @"key":@"obtain", //App端自定义key值
+                   @"value":sasw
+                   }
+         success:^(AFHTTPRequestOperation *  operation, id   responseObject) {
+             
+             NSLog(@"  %@",responseObject);
+         }
+         failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+             
+         }];
+}
 -(void)yanzhenghuodong{
     NSString *path =
     [NSHomeDirectory() stringByAppendingString:@"/Documents/dic.plist"];
@@ -1495,6 +1772,8 @@
              
              NSString *shijian = [yonghuming objectForKey:@"created_at"];
              
+             
+             [[NSUserDefaults standardUserDefaults]setObject:shijian forKey:@"valun1"];
              NSLog(@"%@",shijian);
              
              zhedang = [[UIControl alloc]
@@ -1537,60 +1816,64 @@
                  [tongyi addTarget:self action:@selector(xuzhitui:) forControlEvents:UIControlEventTouchUpInside];
                  [xieyiview addSubview:tongyi];
                  
-                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, __kScreenWidth__-80, 40)];
+                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, __kScreenWidth__-90, 80)];
                  [xieyiview addSubview:xuzhis];
                  xuzhis.text = yonghuming1;
                  xuzhis.font = [UIFont systemFontOfSize:13];
                  xuzhis.textAlignment = UITextAlignmentCenter;
+                 xuzhis.lineBreakMode = UILineBreakModeWordWrap;
+                 xuzhis.numberOfLines = 0;
                  
              }else if(__kScreenHeight__ == 667){
                  UIButton *tongyi = [[UIButton alloc]initWithFrame:CGRectMake(204*__kScreenWidth__/750,70,192*__kScreenWidth__/750 , 65*__kScreenHeight__/1334)];
                  [tongyi setImage:[UIImage imageNamed:@"6ellBtn1"]forState:UIControlStateNormal];
                  [tongyi addTarget:self action:@selector(xuzhitui:) forControlEvents:UIControlEventTouchUpInside];
                  [xieyiview addSubview:tongyi];
-                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, __kScreenWidth__-80, 40)];
+                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, __kScreenWidth__-90, 80)];
                  [xieyiview addSubview:xuzhis];
                  xuzhis.text = yonghuming1;
                  xuzhis.textAlignment = UITextAlignmentCenter;
-                 
+                 xuzhis.lineBreakMode = UILineBreakModeWordWrap;
+                 xuzhis.numberOfLines = 0;
              }else{
                  UIButton *tongyi = [[UIButton alloc]initWithFrame:CGRectMake(204*__kScreenWidth__/750,70,192*__kScreenWidth__/750 , 65*__kScreenHeight__/1334)];
                  [tongyi setImage:[UIImage imageNamed:@"6ellBtn1"]forState:UIControlStateNormal];
                  [tongyi addTarget:self action:@selector(xuzhitui:) forControlEvents:UIControlEventTouchUpInside];
                  [xieyiview addSubview:tongyi];
-                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(0, 20,__kScreenWidth__-80, 40)];
+                 UILabel *xuzhis = [[UILabel alloc]initWithFrame:CGRectMake(5, 5,__kScreenWidth__-90, 80)];
                  [xieyiview addSubview:xuzhis];
                  xuzhis.text = yonghuming1;
                  xuzhis.textAlignment = UITextAlignmentCenter;
-                 
+                 xuzhis.lineBreakMode = UILineBreakModeWordWrap;
+                 xuzhis.numberOfLines = 0;
              }
              
-             NSString *duandingxianshi = [[NSUserDefaults standardUserDefaults]objectForKey:@"huodongshijian"];
+//             NSString *duandingxianshi = [[NSUserDefaults standardUserDefaults]objectForKey:@"huodongshijian"];
              
              
-             if ([duandingxianshi isKindOfClass:[NSNull class]] || duandingxianshi == nil
-                 || duandingxianshi == NULL) {
-                 if([yonghuming1 isEqualToString:@"false"])
-                 {
-                     ;
-                 }else {
-                     [self showShareView];
-                     [[NSUserDefaults standardUserDefaults]setObject:shijian forKey:@"huodongshijian"];
-                 }
-                 
-             }else {
-                 
-                 
-                 if ([shijian isEqualToString:duandingxianshi]) {
-                     ;
-                 }else{
-                     [self showShareView];
-                     [[NSUserDefaults standardUserDefaults]setObject:shijian forKey:@"huodongshijian"];
-                 }
-                 
-             }
+//             if ([duandingxianshi isKindOfClass:[NSNull class]] || duandingxianshi == nil
+//                 || duandingxianshi == NULL) {
+//                 if([yonghuming1 isEqualToString:@"false"])
+//                 {
+//                     ;
+//                 }else {
+//                     [self showShareView];
+//                     [[NSUserDefaults standardUserDefaults]setObject:shijian forKey:@"huodongshijian"];
+//                 }
+//                 
+//             }else {
+//                 
+//                 
+//                 if ([shijian isEqualToString:duandingxianshi]) {
+//                     ;
+//                 }else{
+//                     [self showShareView];
+//                     [[NSUserDefaults standardUserDefaults]setObject:shijian forKey:@"huodongshijian"];
+//                 }
+//                 
+//             }
              
-             
+              [self performSelector:@selector(yanzhenghuodongone) withObject:nil afterDelay:0.1];
          }
          failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
              
