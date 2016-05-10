@@ -1607,9 +1607,12 @@
     promptLabel.layer.cornerRadius = 3;
     promptLabel.clipsToBounds = YES;
     promptLabel.font = [UIFont systemFontOfSize:15];
-    promptLabel.backgroundColor = [UIColor blackColor];
-    promptLabel.frame = CGRectMake((kScreenWidth - (strWidth+30))/2, 600*kHeightScale, strWidth+30, 50*kHeightScale);
+   // promptLabel.backgroundColor = [UIColor blackColor];
+    promptLabel.frame = CGRectMake((kScreenWidth - (strWidth+30))/2, 600*kHeightScale, strWidth+30,  80*__kScreenHeight__/1334);
+  //  promptLabel.frame = CGRectMake((kScreenWidth - (strWidth+30))/2, 650*kHeightScale, strWidth+30,);
     
+    promptLabel.backgroundColor = [UIColor colorWithRed:70/255.0 green:72/255.0 blue:75/255.0 alpha:1];
+
     [self.view addSubview:promptLabel];
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
