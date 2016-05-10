@@ -1177,8 +1177,9 @@
     promptLabel.clipsToBounds = YES;
     promptLabel.font = [UIFont systemFontOfSize:15];
     promptLabel.backgroundColor = [UIColor blackColor];
-    promptLabel.frame = CGRectMake((kScreenWidth - (strWidth+30))/2, 650*kHeightScale, strWidth+30, 50*kHeightScale);
-    
+    promptLabel.frame = CGRectMake((kScreenWidth - (strWidth+30))/2, 650*kHeightScale, strWidth+30, 80*__kScreenHeight__/1334);
+   // UILabel *meishurushouji = [[UILabel alloc]initWithFrame:CGRectMake(180*__kScreenWidth__/750, 670*__kScreenHeight__/1334, 390*__kScreenWidth__/750, 70*__kScreenHeight__/1334)];
+          promptLabel.backgroundColor = [UIColor colorWithRed:70/255.0 green:72/255.0 blue:75/255.0 alpha:1];
     [self.view addSubview:promptLabel];
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
